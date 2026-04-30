@@ -119,10 +119,9 @@ message QuotaDecision {
   int64 monthly_byte_limit = 5;
 }
 
-service RelayControl {
+service RelayControlService {
   rpc Bootstrap(BootstrapRequest) returns (BootstrapResponse);
   rpc WatchConfig(WatchConfigRequest) returns (stream WatchConfigResponse);
   rpc WatchCerts(WatchCertsRequest) returns (stream WatchCertsResponse);
   rpc QuotaStream(stream QuotaStreamRequest) returns (stream QuotaStreamResponse);
 }
-
