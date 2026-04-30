@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+package portless.v1;
+
+option go_package = "github.com/portless/portless-contracts/gen/go/portless/v1;portlessv1";
+
+enum TunnelState {
+  TUNNEL_STATE_UNSPECIFIED = 0;
+  TUNNEL_STATE_PENDING = 1;
+  TUNNEL_STATE_ACCEPTING = 2;
+  TUNNEL_STATE_DISCONNECTED = 3;
+  TUNNEL_STATE_BLOCKED = 4;
+}
+
+enum RelayLifecycle {
+  RELAY_LIFECYCLE_UNSPECIFIED = 0;
+  RELAY_LIFECYCLE_STARTING = 1;
+  RELAY_LIFECYCLE_ACCEPTING = 2;
+  RELAY_LIFECYCLE_DRAINING = 3;
+  RELAY_LIFECYCLE_TERMINATING = 4;
+  RELAY_LIFECYCLE_STOPPED = 5;
+}
+
+enum FailureClass {
+  FAILURE_CLASS_UNSPECIFIED = 0;
+  FAILURE_CLASS_QUOTA_EXCEEDED = 1;
+  FAILURE_CLASS_TUNNEL_UNAVAILABLE = 2;
+  FAILURE_CLASS_RELAY_DRAINING = 3;
+  FAILURE_CLASS_UNSUPPORTED_NETWORK = 4;
+  FAILURE_CLASS_REVOKED = 5;
+}
+
+enum CloseReason {
+  CLOSE_REASON_UNSPECIFIED = 0;
+  CLOSE_REASON_CLIENT_GONE = 1;
+  CLOSE_REASON_DAEMON_GONE = 2;
+  CLOSE_REASON_QUOTA_EXCEEDED = 3;
+  CLOSE_REASON_REVOKED = 4;
+  CLOSE_REASON_RELAY_DRAINING = 5;
+}
+
+enum QuotaResult {
+  QUOTA_RESULT_UNSPECIFIED = 0;
+  QUOTA_RESULT_ALLOWED = 1;
+  QUOTA_RESULT_BLOCKED = 2;
+}
+
+message TunnelRef {
+  string tunnel_id = 1;
+  string account_id = 2;
+  string subdomain = 3;
+  int64 config_generation = 4;
+}
+
+message BootstrapRequest {
+  string relay_id = 1;
+  string version = 2;
+}
+
+message BootstrapResponse {
+  string relay_id = 1;
+  RelayLifecycle lifecycle = 2;
+  int64 config_generation = 3;
+}
+
+message WatchConfigRequest {
+  string relay_id = 1;
+  int64 current_generation = 2;
+}
+
+message WatchConfigResponse {
+  int64 config_generation = 1;
+  repeated TunnelConfig tunnels = 2;
+  RelayLifecycle lifecycle = 3;
+}
+
+message TunnelConfig {
+  TunnelRef tunnel = 1;
+  TunnelState state = 2;
+  int64 monthly_bytes_used = 3;
+  int64 monthly_byte_limit = 4;
+  int32 max_active_streams = 5;
+  int32 max_upgrade_streams = 6;
+}
+
+message WatchCertsRequest {
+  string relay_id = 1;
+  int64 current_generation = 2;
+}
+
+message WatchCertsResponse {
+  int64 config_generation = 1;
+  repeated string revoked_serials = 2;
+}
+
+message QuotaStreamRequest {
+  string relay_id = 1;
+  repeated UsageDelta deltas = 2;
+}
+
+message QuotaStreamResponse {
+  string relay_id = 1;
+  repeated QuotaDecision decisions = 2;
+}
+
+message UsageDelta {
+  TunnelRef tunnel = 1;
+  string idempotency_key = 2;
+  int64 bytes_in = 3;
+  int64 bytes_out = 4;
+  int64 observed_window_unix = 5;
+}
+
+message QuotaDecision {
+  string tunnel_id = 1;
+  QuotaResult result = 2;
+  FailureClass failure_class = 3;
+  int64 monthly_bytes_used = 4;
+  int64 monthly_byte_limit = 5;
+}
+
+service RelayControl {
+  rpc Bootstrap(BootstrapRequest) returns (BootstrapResponse);
+  rpc WatchConfig(WatchConfigRequest) returns (stream WatchConfigResponse);
+  rpc WatchCerts(WatchCertsRequest) returns (stream WatchCertsResponse);
+  rpc QuotaStream(stream QuotaStreamRequest) returns (stream QuotaStreamResponse);
+}
+
