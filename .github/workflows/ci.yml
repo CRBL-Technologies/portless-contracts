@@ -1,0 +1,31 @@
+name: Contracts CI
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  proto:
+    name: Proto
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Check protobuf contracts
+        uses: bufbuild/buf-action@v1
+        with:
+          version: 1.69.0
+          lint: true
+          format: true
+          breaking: false
+          push: false
+          pr_comment: false
