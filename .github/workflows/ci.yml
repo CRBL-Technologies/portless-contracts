@@ -27,6 +27,6 @@ jobs:
           version: 1.69.0
           lint: true
           format: true
-          breaking: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+          breaking: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000') }}
           push: false
           pr_comment: false
