@@ -10,8 +10,9 @@ hand-copying cross-repo request/response shapes.
 ## Layout
 
 - `proto/` - versioned protobuf contracts.
-- `gen/` - generated code output, ignored by git unless a generated artifact is
-  intentionally published later.
+- `gen/go/` - generated Go protobuf and gRPC code committed for Go consumers.
+- `src/` + `build.rs` - Rust crate entrypoint; `tonic-build` generates Rust
+  protobuf and gRPC code from `proto/` at crate build time.
 
 ## Secret Handling
 
@@ -25,3 +26,16 @@ linting or publishing.
 - `proto/portless/v1/control.proto` - relay control-plane lifecycle, config,
   certificate revocation, and quota stream contracts.
 
+## Generation
+
+Go artifacts are generated with:
+
+```sh
+protoc -I proto \
+  --go_out=gen/go --go_opt=paths=source_relative \
+  --go-grpc_out=gen/go --go-grpc_opt=paths=source_relative \
+  proto/portless/v1/control.proto
+```
+
+Rust consumers depend on this repository as the `portless-contracts` crate; the
+crate uses a vendored `protoc` during `cargo build`.
