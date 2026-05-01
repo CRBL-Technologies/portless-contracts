@@ -1,4 +1,4 @@
-module github.com/portless/portless-contracts
+module github.com/CRBL-Technologies/portless-contracts
 
 go 1.25.0
 
