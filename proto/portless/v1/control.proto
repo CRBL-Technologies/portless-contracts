@@ -28,6 +28,8 @@ enum FailureClass {
   FAILURE_CLASS_RELAY_DRAINING = 3;
   FAILURE_CLASS_UNSUPPORTED_NETWORK = 4;
   FAILURE_CLASS_REVOKED = 5;
+  FAILURE_CLASS_IDLE_TIMEOUT = 6;
+  FAILURE_CLASS_PROTOCOL_ERROR = 7;
 }
 
 enum CloseReason {
@@ -37,12 +39,41 @@ enum CloseReason {
   CLOSE_REASON_QUOTA_EXCEEDED = 3;
   CLOSE_REASON_REVOKED = 4;
   CLOSE_REASON_RELAY_DRAINING = 5;
+  CLOSE_REASON_IDLE_TIMEOUT = 6;
+  CLOSE_REASON_PROTOCOL_ERROR = 7;
+}
+
+enum QuicApplicationErrorCode {
+  QUIC_APPLICATION_ERROR_CODE_UNSPECIFIED = 0;
+  QUIC_APPLICATION_ERROR_CODE_CANCELLED = 256;
+  QUIC_APPLICATION_ERROR_CODE_RELAY_DRAINING = 257;
+  QUIC_APPLICATION_ERROR_CODE_QUOTA_EXCEEDED = 258;
+  QUIC_APPLICATION_ERROR_CODE_REVOKED = 259;
 }
 
 enum QuotaResult {
   QUOTA_RESULT_UNSPECIFIED = 0;
   QUOTA_RESULT_ALLOWED = 1;
   QUOTA_RESULT_BLOCKED = 2;
+}
+
+enum TunnelStatus {
+  TUNNEL_STATUS_UNSPECIFIED = 0;
+  TUNNEL_STATUS_STARTING = 1;
+  TUNNEL_STATUS_CONNECTED = 2;
+  TUNNEL_STATUS_RECONNECTING = 3;
+  TUNNEL_STATUS_AUTH_FAILED = 4;
+  TUNNEL_STATUS_CAP_REACHED = 5;
+  TUNNEL_STATUS_DEVICE_REVOKED = 6;
+  TUNNEL_STATUS_HOME_UNREACHABLE = 7;
+  TUNNEL_STATUS_PLEX_UNREACHABLE = 8;
+  TUNNEL_STATUS_RELAY_UNREACHABLE = 9;
+}
+
+enum CertRevocationAction {
+  CERT_REVOCATION_ACTION_UNSPECIFIED = 0;
+  CERT_REVOCATION_ACTION_REVOKE = 1;
+  CERT_REVOCATION_ACTION_RESTORE = 2;
 }
 
 message TunnelRef {
@@ -55,12 +86,15 @@ message TunnelRef {
 message BootstrapRequest {
   string relay_id = 1;
   string version = 2;
+  repeated string capabilities = 3;
 }
 
 message BootstrapResponse {
   string relay_id = 1;
   RelayLifecycle lifecycle = 2;
   int64 config_generation = 3;
+  int64 cert_generation = 4;
+  repeated string accepted_capabilities = 5;
 }
 
 message WatchConfigRequest {
@@ -72,6 +106,7 @@ message WatchConfigResponse {
   int64 config_generation = 1;
   repeated TunnelConfig tunnels = 2;
   RelayLifecycle lifecycle = 3;
+  RelayDrainNotice drain = 4;
 }
 
 message TunnelConfig {
@@ -90,7 +125,29 @@ message WatchCertsRequest {
 
 message WatchCertsResponse {
   int64 config_generation = 1;
-  repeated string revoked_serials = 2;
+  repeated string revoked_serials = 2 [deprecated = true];
+  repeated CertRevocation revocations = 3;
+}
+
+message CertRevocation {
+  string serial_number = 1;
+  string tunnel_id = 2;
+  string token_id = 3;
+  CertRevocationAction action = 4;
+  int64 revoked_at_unix_ms = 5;
+  string reason = 6;
+}
+
+message RelayDrainNotice {
+  RelayLifecycle lifecycle = 1;
+  int64 deadline_unix_ms = 2;
+  repeated string replacement_endpoints = 3;
+  FailureClass failure_class = 4;
+}
+
+message RelayControlFrame {
+  string id = 1;
+  RelayDrainNotice drain = 2;
 }
 
 message QuotaStreamRequest {
@@ -119,9 +176,26 @@ message QuotaDecision {
   int64 monthly_byte_limit = 5;
 }
 
+message DaemonStatusUpdate {
+  TunnelRef tunnel = 1;
+  TunnelStatus status = 2;
+  FailureClass failure_class = 3;
+  string detail = 4;
+  int64 observed_at_unix_ms = 5;
+}
+
+message ReportDaemonStatusRequest {
+  DaemonStatusUpdate status = 1;
+}
+
+message ReportDaemonStatusResponse {
+  WatchConfigResponse config = 1;
+}
+
 service RelayControlService {
   rpc Bootstrap(BootstrapRequest) returns (BootstrapResponse);
   rpc WatchConfig(WatchConfigRequest) returns (stream WatchConfigResponse);
   rpc WatchCerts(WatchCertsRequest) returns (stream WatchCertsResponse);
   rpc QuotaStream(stream QuotaStreamRequest) returns (stream QuotaStreamResponse);
+  rpc ReportDaemonStatus(stream ReportDaemonStatusRequest) returns (stream ReportDaemonStatusResponse);
 }
