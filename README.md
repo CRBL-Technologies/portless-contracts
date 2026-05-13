@@ -1,5 +1,8 @@
 # Portless Contracts
 
+[![Contracts CI](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/ci.yml?query=branch%3Adev)
+[![Security](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/security.yml/badge.svg?branch=dev)](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/security.yml?query=branch%3Adev)
+
 Shared API and transport contracts for Portless.
 
 This repository is the source of truth for protobuf and schema files that are

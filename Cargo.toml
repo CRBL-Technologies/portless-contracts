@@ -1,8 +1,9 @@
 [package]
 name = "portless-contracts"
-version = "1.0.0"
+version = "1.0.2"
 edition = "2021"
 rust-version = "1.76"
+license = "Elastic-2.0"
 build = "build.rs"
 include = [
   "build.rs",
