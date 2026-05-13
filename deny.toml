@@ -10,20 +10,16 @@ allow = [
   "Apache-2.0 WITH LLVM-exception",
   "BSD-2-Clause",
   "BSD-3-Clause",
-  "CC0-1.0",
-  "CDLA-Permissive-2.0",
   "Elastic-2.0",
-  "ISC",
   "MIT",
-  "MPL-2.0",
-  "OpenSSL",
   "Unicode-3.0",
-  "Zlib",
 ]
 confidence-threshold = 0.8
 
 [bans]
-multiple-versions = "warn"
+# Duplicate versions are currently expected in the tonic/prost toolchain.
+# Advisories still fail vulnerable duplicate crates.
+multiple-versions = "allow"
 wildcards = "allow"
 highlight = "all"
 
