@@ -1,1 +1,9 @@
 target/
+.env
+.env.local
+*.env
+*.key
+*.pem
+*.pem.enc
+*.secret
+*.token

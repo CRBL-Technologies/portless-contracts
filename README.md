@@ -9,6 +9,17 @@ This repo is the source of truth for cross-repo service contracts. Runtime repos
 should consume this package or generated artifacts instead of hand-copying
 request and response shapes.
 
+## Public Use
+
+This repository contains interface definitions and generated bindings only. It
+does not need runtime credentials, deployment configuration, customer data, or
+private environment files.
+
+Consumers should depend on tagged releases, for example `v1.0.3`, rather than a
+moving branch. Review [SECURITY.md](SECURITY.md) and
+[docs/public-readiness.md](docs/public-readiness.md) before changing repository
+visibility.
+
 ## Contents
 
 - `proto/portless/v1/control.proto` - relay control, daemon status, certificates,
