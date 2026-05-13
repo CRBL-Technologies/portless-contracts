@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package portless.v1;
 
-option go_package = "github.com/portless/portless-contracts/gen/go/portless/v1;portlessv1";
+option go_package = "github.com/CRBL-Technologies/portless-contracts/gen/go/portless/v1;portlessv1";
 
 enum TunnelState {
   TUNNEL_STATE_UNSPECIFIED = 0;
