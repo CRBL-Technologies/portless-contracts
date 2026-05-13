@@ -16,9 +16,8 @@ does not need runtime credentials, deployment configuration, customer data, or
 private environment files.
 
 Consumers should depend on tagged releases, for example `v1.0.3`, rather than a
-moving branch. Review [SECURITY.md](SECURITY.md) and
-[docs/public-readiness.md](docs/public-readiness.md) before changing repository
-visibility.
+moving branch. Security reporting and sensitive-data guidance are in
+[SECURITY.md](SECURITY.md).
 
 ## Contents
 
