@@ -1,7 +1,7 @@
 # Portless Contracts
 
-[![Contracts CI](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/ci.yml?query=branch%3Adev)
-[![Security](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/security.yml/badge.svg?branch=dev)](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/security.yml?query=branch%3Adev)
+[![Contracts CI](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/ci.yml?query=branch%3Amain)
+[![Security](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/security.yml?query=branch%3Amain)
 
 Shared protobuf and generated API bindings for Portless.
 
@@ -18,6 +18,12 @@ private environment files.
 Consumers should depend on tagged releases, for example `v1.0.3`, rather than a
 moving branch. Security reporting and sensitive-data guidance are in
 [SECURITY.md](SECURITY.md).
+
+## Versioning
+
+Contract tags use `v1.0.x`. Treat tags as compatibility points for downstream
+repos; update consumers only after the contracts CI, protobuf checks, and
+security checks pass on `main`.
 
 ## Contents
 
