@@ -1780,7 +1780,7 @@ const file_portless_v1_control_proto_rawDesc = "" +
 	"\n" +
 	"WatchCerts\x12\x1e.portless.v1.WatchCertsRequest\x1a\x1f.portless.v1.WatchCertsResponse0\x01\x12T\n" +
 	"\vQuotaStream\x12\x1f.portless.v1.QuotaStreamRequest\x1a .portless.v1.QuotaStreamResponse(\x010\x01\x12i\n" +
-	"\x12ReportDaemonStatus\x12&.portless.v1.ReportDaemonStatusRequest\x1a'.portless.v1.ReportDaemonStatusResponse(\x010\x01BFZDgithub.com/portless/portless-contracts/gen/go/portless/v1;portlessv1b\x06proto3"
+	"\x12ReportDaemonStatus\x12&.portless.v1.ReportDaemonStatusRequest\x1a'.portless.v1.ReportDaemonStatusResponse(\x010\x01BOZMgithub.com/CRBL-Technologies/portless-contracts/gen/go/portless/v1;portlessv1b\x06proto3"
 
 var (
 	file_portless_v1_control_proto_rawDescOnce sync.Once

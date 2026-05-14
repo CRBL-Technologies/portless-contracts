@@ -38,7 +38,7 @@ jobs:
           cache: false
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.95.0
 
       - name: Check generated packages
         run: |

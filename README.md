@@ -1,34 +1,53 @@
 # Portless Contracts
 
-Shared API and transport contracts for Portless.
+[![Contracts CI](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/ci.yml?query=branch%3Adev)
+[![Security](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/security.yml/badge.svg?branch=dev)](https://github.com/CRBL-Technologies/portless-contracts/actions/workflows/security.yml?query=branch%3Adev)
 
-This repository is the source of truth for protobuf and schema files that are
-consumed across the control plane, relay, daemon, and admin surfaces. Runtime
-repositories should generate or vendor code from this repository instead of
-hand-copying cross-repo request/response shapes.
+Shared protobuf and generated API bindings for Portless.
 
-## Layout
+This repo is the source of truth for cross-repo service contracts. Runtime repos
+should consume this package or generated artifacts instead of hand-copying
+request and response shapes.
 
-- `proto/` - versioned protobuf contracts.
-- `gen/go/` - generated Go protobuf and gRPC code committed for Go consumers.
-- `src/` + `build.rs` - Rust crate entrypoint; `tonic-build` generates Rust
-  protobuf and gRPC code from `proto/` at crate build time.
+## Public Use
 
-## Secret Handling
+This repository contains interface definitions and generated bindings only. It
+does not need runtime credentials, deployment configuration, customer data, or
+private environment files.
 
-This repository must not contain Cloudflare, Portainer, GHCR, Plex, or other
-runtime secrets. GitHub repository secrets are intentionally not copied from any
-runtime repository; add only the minimum CI credentials needed for contract
-linting or publishing.
+Consumers should depend on tagged releases, for example `v1.0.3`, rather than a
+moving branch. Security reporting and sensitive-data guidance are in
+[SECURITY.md](SECURITY.md).
 
-## Current Contracts
+## Contents
 
-- `proto/portless/v1/control.proto` - relay control-plane lifecycle, config,
-  certificate revocation, and quota stream contracts.
+- `proto/portless/v1/control.proto` - relay control, daemon status, certificates,
+  quota, and lifecycle messages.
+- `gen/go/` - committed Go protobuf/gRPC bindings.
+- `src/` and `build.rs` - Rust crate wrapper; Rust bindings are generated at
+  build time with vendored `protoc`.
 
-## Generation
+## Requirements
 
-Go artifacts are generated with:
+- Rust `1.95.0`
+- Go, for validating generated Go bindings
+- `protoc`, `protoc-gen-go`, and `protoc-gen-go-grpc` only when regenerating
+  committed Go code
+
+## Check
+
+```sh
+cargo fmt -- --check
+cargo test --locked
+cargo clippy --locked -- -D warnings
+cargo deny check advisories bans licenses sources
+GOWORK=off go test ./...
+```
+
+`cargo deny` intentionally leaves duplicate-version warnings visible. Advisory,
+license, and source-policy failures still fail the check.
+
+## Regenerate Go Bindings
 
 ```sh
 protoc -I proto \
@@ -37,5 +56,4 @@ protoc -I proto \
   proto/portless/v1/control.proto
 ```
 
-Rust consumers depend on this repository as the `portless-contracts` crate; the
-crate uses a vendored `protoc` during `cargo build`.
+Tag contract releases (`v1.0.x`) before updating consumers.
