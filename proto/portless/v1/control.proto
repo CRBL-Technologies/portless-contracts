@@ -129,6 +129,19 @@ message WatchCertsResponse {
   repeated CertRevocation revocations = 3;
 }
 
+message WatchWebPkiRequest {
+  string relay_id = 1;
+  int64 current_generation = 2;
+}
+
+message WatchWebPkiResponse {
+  int64 generation = 1;
+  string certificate_pem = 2;
+  string private_key_pem = 3;
+  string sha256_fingerprint = 4;
+  int64 not_after_unix = 5;
+}
+
 message CertRevocation {
   string serial_number = 1;
   string tunnel_id = 2;
@@ -196,6 +209,7 @@ service RelayControlService {
   rpc Bootstrap(BootstrapRequest) returns (BootstrapResponse);
   rpc WatchConfig(WatchConfigRequest) returns (stream WatchConfigResponse);
   rpc WatchCerts(WatchCertsRequest) returns (stream WatchCertsResponse);
+  rpc WatchWebPki(WatchWebPkiRequest) returns (stream WatchWebPkiResponse);
   rpc QuotaStream(stream QuotaStreamRequest) returns (stream QuotaStreamResponse);
   rpc ReportDaemonStatus(stream ReportDaemonStatusRequest) returns (stream ReportDaemonStatusResponse);
 }
