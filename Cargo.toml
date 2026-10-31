@@ -12,10 +12,16 @@ include = [
   "src/lib.rs",
 ]
 
+[features]
+# gRPC client/server stubs and the tonic transport stack. Consumers that only
+# need protobuf messages and enums disable default features.
+default = ["grpc"]
+grpc = ["dep:tonic", "dep:tonic-prost"]
+
 [dependencies]
 prost = "0.14"
-tonic = { version = "0.14.6", default-features = false, features = ["codegen", "transport"] }
-tonic-prost = "0.14.6"
+tonic = { version = "0.14.6", default-features = false, features = ["codegen", "transport"], optional = true }
+tonic-prost = { version = "0.14.6", optional = true }
 
 [build-dependencies]
 protoc-bin-vendored = "3"

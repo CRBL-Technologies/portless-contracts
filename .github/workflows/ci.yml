@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: Check protobuf contracts
-        uses: bufbuild/buf-action@v1
+        uses: bufbuild/buf-action@8c6a16e16f12ba20b6470afa9c2ba9b5ba8c97c3 # v1.5.0
         with:
           version: 1.69.0
           lint: true
@@ -39,7 +39,7 @@ jobs:
           cache-dependency-path: go.sum
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@1.95.0
+        uses: dtolnay/rust-toolchain@035fceb3c12fb0c6a9461b52775e16473133e591 # 1.95.0
 
       - name: Cache cargo build
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -57,3 +57,4 @@ jobs:
         run: |
           GOWORK=off go test ./...
           cargo test --locked
+          cargo check --locked --no-default-features

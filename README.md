@@ -33,6 +33,14 @@ security checks pass on `main`.
 - `src/` and `build.rs` - Rust crate wrapper; Rust bindings are generated at
   build time with vendored `protoc`.
 
+The Rust crate's default `grpc` feature adds the tonic client/server stubs and
+transport stack. Consumers that only need protobuf messages and enums, such as
+the daemon, should disable default features:
+
+```toml
+portless-contracts = { git = "https://github.com/CRBL-Technologies/portless-contracts", tag = "v1.0.x", default-features = false }
+```
+
 ## Requirements
 
 - Rust `1.95.0`
@@ -45,6 +53,7 @@ security checks pass on `main`.
 ```sh
 cargo fmt -- --check
 cargo test --locked
+cargo check --locked --no-default-features
 cargo clippy --locked -- -D warnings
 cargo deny check advisories bans licenses sources
 GOWORK=off go test ./...
